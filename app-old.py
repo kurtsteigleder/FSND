@@ -105,76 +105,84 @@ def search_venues():
 def show_venue(venue_id):
   # shows the venue page with the given venue_id
   # TODO: replace with real venue data from the venues table, using venue_id
-  venue = db.session.query(Venue).filter_by(id=venue_id).first()
-
-  past_shows_search = db.session.query(Show).join(Artist).filter(
-    Show.venue_id==venue_id).filter(
-    Show.start_time<=datetime.now()).all()
-
-  upcoming_shows_search = db.session.query(Show).join(Venue).filter(
-    Show.venue_id==venue_id).filter(
-    Show.start_time>datetime.now()).all()
-
-  upcoming_shows = []
-  past_shows = []
-
-  # add upcoming shows to venue object
-  for show in upcoming_shows_search:
-      upcoming_shows.append({
-        "artist_id": show.artist_id,
-        "artist_name": show.artist.name,
-        "artist_image_link": show.artist.image_link,
-        "start_time": show.start_time.strftime("%Y-%m-%d %H:%M:%S")
-      })
-
-  for show in past_shows_search:
-    past_shows.append({
-      "artist_id": show.artist_id,
-      "artist_name": show.artist.name,
-      "artist_image_link": show.artist.image_link,
-      "start_time": show.start_time.strftime('%Y-%m-%d %H:%M:%S')
-    })
-
-  data = {
-      "id": venue.id,
-      "name": venue.name,
-      "genres": venue.genres,
-      "city": venue.city,
-      "state": venue.state,
-      "phone": venue.phone,
-      "website": venue.website,
-      "facebook_link": venue.facebook_link,
-      "seeking_talent": venue.seeking_talent,
-      "seeking_description": venue.seeking_description,
-      "image_link": venue.image_link,
-      "past_shows": past_shows,
-      "upcoming_shows": upcoming_shows,
-      "past_shows_count": len(past_shows),
-      "upcoming_shows_count": len(upcoming_shows)
+  data1={
+    "id": 1,
+    "name": "The Musical Hop",
+    "genres": ["Jazz", "Reggae", "Swing", "Classical", "Folk"],
+    "address": "1015 Folsom Street",
+    "city": "San Francisco",
+    "state": "CA",
+    "phone": "123-123-1234",
+    "website": "https://www.themusicalhop.com",
+    "facebook_link": "https://www.facebook.com/TheMusicalHop",
+    "seeking_talent": True,
+    "seeking_description": "We are on the lookout for a local artist to play every two weeks. Please call us.",
+    "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60",
+    "past_shows": [{
+      "artist_id": 4,
+      "artist_name": "Guns N Petals",
+      "artist_image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
+      "start_time": "2019-05-21T21:30:00.000Z"
+    }],
+    "upcoming_shows": [],
+    "past_shows_count": 1,
+    "upcoming_shows_count": 0,
   }
-  # data1={
-  #   "id": 1,
-  #   "name": "The Musical Hop",
-  #   "genres": ["Jazz", "Reggae", "Swing", "Classical", "Folk"],
-  #   "address": "1015 Folsom Street",
-  #   "city": "San Francisco",
-  #   "state": "CA",
-  #   "phone": "123-123-1234",
-  #   "website": "https://www.themusicalhop.com",
-  #   "facebook_link": "https://www.facebook.com/TheMusicalHop",
-  #   "seeking_talent": True,
-  #   "seeking_description": "We are on the lookout for a local artist to play every two weeks. Please call us.",
-  #   "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60",
-  #   "past_shows": [{
-  #     "artist_id": 4,
-  #     "artist_name": "Guns N Petals",
-  #     "artist_image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
-  #     "start_time": "2019-05-21T21:30:00.000Z"
-  #   }],
-  #   "upcoming_shows": [],
-  #   "past_shows_count": 1,
-  #   "upcoming_shows_count": 0,
-  # }
+  data2={
+    "id": 2,
+    "name": "The Dueling Pianos Bar",
+    "genres": ["Classical", "R&B", "Hip-Hop"],
+    "address": "335 Delancey Street",
+    "city": "New York",
+    "state": "NY",
+    "phone": "914-003-1132",
+    "website": "https://www.theduelingpianos.com",
+    "facebook_link": "https://www.facebook.com/theduelingpianos",
+    "seeking_talent": False,
+    "image_link": "https://images.unsplash.com/photo-1497032205916-ac775f0649ae?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80",
+    "past_shows": [],
+    "upcoming_shows": [],
+    "past_shows_count": 0,
+    "upcoming_shows_count": 0,
+  }
+  data3={
+    "id": 3,
+    "name": "Park Square Live Music & Coffee",
+    "genres": ["Rock n Roll", "Jazz", "Classical", "Folk"],
+    "address": "34 Whiskey Moore Ave",
+    "city": "San Francisco",
+    "state": "CA",
+    "phone": "415-000-1234",
+    "website": "https://www.parksquarelivemusicandcoffee.com",
+    "facebook_link": "https://www.facebook.com/ParkSquareLiveMusicAndCoffee",
+    "seeking_talent": False,
+    "image_link": "https://images.unsplash.com/photo-1485686531765-ba63b07845a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80",
+    "past_shows": [{
+      "artist_id": 5,
+      "artist_name": "Matt Quevedo",
+      "artist_image_link": "https://images.unsplash.com/photo-1495223153807-b916f75de8c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
+      "start_time": "2019-06-15T23:00:00.000Z"
+    }],
+    "upcoming_shows": [{
+      "artist_id": 6,
+      "artist_name": "The Wild Sax Band",
+      "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
+      "start_time": "2035-04-01T20:00:00.000Z"
+    }, {
+      "artist_id": 6,
+      "artist_name": "The Wild Sax Band",
+      "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
+      "start_time": "2035-04-08T20:00:00.000Z"
+    }, {
+      "artist_id": 6,
+      "artist_name": "The Wild Sax Band",
+      "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
+      "start_time": "2035-04-15T20:00:00.000Z"
+    }],
+    "past_shows_count": 1,
+    "upcoming_shows_count": 1,
+  }
+  data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
   return render_template('pages/show_venue.html', venue=data)
 
 #  Create Venue
@@ -196,11 +204,11 @@ def create_venue_submission():
       city = form.city.data,
       state = form.state.data,
       phone = form.phone.data,
-      website = form.website_link.data,
+      #website = form.website_link.data,
       facebook_link = form.facebook_link.data,
-      seeking_talent= form.seeking_talent.data,
-      seeking_description = form.seeking_description.data,
-      image_link = form.image_link.data,
+      # seeking_venue = form.seeking_venue.data,
+      # seeking_description = form.seeking_description.data,
+      # image_link = form.image_link.data,
   )
   try:
       db.session.add(venue)
@@ -278,7 +286,7 @@ def show_artist(artist_id):
         "venue_id": show.venue_id,
         "venue_name": show.venue.name,
         "venue_image_link": show.venue.image_link,
-        "start_time": show.start_time.strftime('%Y-%m-%d %H:%M:%S')
+        "start_time": show.show_time.strftime('%Y-%m-%d %H:%M:%S')
         })
 
   data = {
@@ -397,23 +405,10 @@ def create_artist_submission():
 @app.route('/shows')
 def shows():
   # displays list of shows at /shows
-  shows_search = db.session.query(Show).join(Artist).join(Venue).all()
-
-  # Variables
-  data = []
-
-  # Formating data
-  for show in shows_search:
-    data.append({
-        "venue_id": show.venue.id,
-        "venue_name": show.venue.name,
-        "artist_name": show.artist_name,
-        "artist_id": show.artist_id,
-        "artist_image_link": show.artist.image_link,
-        "start_time": show.start_time.strftime('%Y-%m-%d %H:%M:%S')
-    })
-
-  return render_template('pages/shows.html', shows=data)
+  # TODO: replace with real venues data.
+  #       num_shows should be aggregated based on number of upcoming shows per venue.
+  data=Show.query.all()
+  
   # [{
   #   "venue_id": 1,
   #   "venue_name": "The Musical Hop",
@@ -451,44 +446,82 @@ def shows():
   #   "start_time": "2035-04-15T20:00:00.000Z"
   # }]
   return render_template('pages/shows.html', shows=data)
-
 @app.route('/shows/create')
 def create_shows():
-  # renders form. do not touch.
-  form = ShowForm()
-  return render_template('forms/new_show.html', form=form)
+    # renders form. do not touch.
+    form = ShowForm()
+    return render_template('forms/new_show.html', form=form)
+
 
 @app.route('/shows/create', methods=['GET', 'POST'])
 def create_show_submission():
-  # called to create new shows in the db, upon submitting new show listing form
-  # TODO: [COMPLETED] insert form data as a new Show record in the db, instead
-  error = False
-  date_format = '%Y-%m-%d %H:%M:%S'
-  if request.method == 'POST':
-    try:
-      show = Show()
-      show.artist_id = request.form['artist_id']
-      show.artist_name = db.session.query(Artist.name).filter(Artist.id==request.form['artist_id'])
-      show.venue_id = request.form['venue_id']
-      show.start_time = datetime.strptime(request.form['start_time'], date_format)
-      db.session.add(show)
-      db.session.commit()
-    except Exception as e:
-      error = True
-      print(f'Error ==> {e}')
-      db.session.rollback()
-    finally:
-      db.session.close()
-      if error: flash('An error occurred. The show could not be listed. Please try again or contact us at support@fyyur.com')
-      else: flash('Show was successfully listed!')
-    return render_template('pages/home.html')
 
-@app.errorhandler(404)
-def not_found_error(error):
-    return render_template('errors/404.html'), 404
+    # Varables
+    error = False
+    form = ShowForm(request.form)
 
-@app.errorhandler(500)
-def server_error(error):
+    #Formating data
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            try:
+                new_show = Show(
+                    form.venue_id.data,
+                    form.artist_id.data,
+                    form.start_time.data
+                )
+                db.session.add(new_show)
+                db.session.commit()
+            except:
+                error = True
+
+                db.session.rollback()
+                print(sys.exc_info())
+            finally:
+                db.session.close()
+    if not error:
+         flash('Show was successfully created!')
+         return render_template('pages/home.html')
+    else:
+        flash('An error occurred. Show could not be listed.')
+        return render_template('pages/home.html')
+
+# @app.route('/shows/create')
+# def create_shows():
+#   # renders form. do not touch.
+#   form = ShowForm()
+#   return render_template('forms/new_show.html', form=form)
+
+# @app.route('/shows/create', methods=['POST'])
+# def create_show_submission():
+#   error = False
+#   form = ShowForm(request.form)
+#   try:
+#       new_show = Show (
+#           form.venue_id.data,
+#           form.artist_id.data,
+#           form.start_time.data
+#       )
+#       db.session.add(new_show)
+#       db.session.commit()
+#   except:
+#       error = True
+#       db.session.rollback()
+#       print(sys.exc_info())
+#   finally:
+#       db.session.close()
+#   if not error:
+#         flash('The show was successfully created! We\'ll see you there!')
+#         return render_template('pages/home.html')
+#   else:
+#       flash('An error occurred. Show could not be listed.')
+#       return render_template('pages/home.html')
+
+# @app.errorhandler(404)
+# def not_found_error(error):
+#     return render_template('errors/404.html'), 404
+
+# @app.errorhandler(500)
+# def server_error(error):
     return render_template('errors/500.html'), 500
 
 
