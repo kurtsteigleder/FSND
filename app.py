@@ -185,7 +185,7 @@ def create_venue_form():
   form = VenueForm()
   return render_template('forms/new_venue.html', form=form)
 
-@app.route('/venues/create', methods=['POST'])
+@app.route('/venues/create_no_csrf', methods=['POST'])
 def create_venue_submission():
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
@@ -202,15 +202,17 @@ def create_venue_submission():
       seeking_description = form.seeking_description.data,
       image_link = form.image_link.data,
   )
-  try:
-      db.session.add(venue)
-      db.session.commit()
-      flash('Venue ' + form.name.data + ' was successfully listed!')
-  except:
-      flash('An error occurred. Venue ' + form.name.data + 'could not be added')
-      print(sys.exc_info())
-  finally:
-      db.session.close()
+  if form.validate_on_submit():
+    try:
+        db.session.add(venue)
+        db.session.commit()
+        flash('Venue ' + form.name.data + ' was successfully listed!')
+    except:
+        flash('An error occurred. Venue ' + form.name.data + 'could not be added')
+        print(form.errors)
+        print(sys.exc_info())
+    finally:
+        db.session.close()
   # on successful db insert, flash success
   # TODO: on unsuccessful db insert, flash an error instead.
   # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
@@ -364,7 +366,7 @@ def create_artist_form():
 # called upon submitting the new artist listing form
 # DONE: insert form data as a new Venue record in the db, instead
 # DONE: modify data to be the data object returned from db insertion
-@app.route('/artists/create', methods=['POST'])
+@app.route('/artists/create_no_csrf', methods=['POST'])
 def create_artist_submission():
   form = ArtistForm(request.form)
   artist = Artist(
@@ -379,15 +381,17 @@ def create_artist_submission():
       seeking_description = form.seeking_description.data,
       image_link = form.image_link.data,
   )
-  try:
-      db.session.add(artist)
-      db.session.commit()
-      flash('Artist ' + form.name.data + ' was successfully listed!')
-  except:
-      flash('An error occurred. Artist ' + form.name.data + 'could not be added')
-      print(sys.exc_info())
-  finally:
-      db.session.close()
+  if form.validate_on_submit():
+    try:
+        db.session.add(artist)
+        db.session.commit()
+        flash('Artist ' + form.name.data + ' was successfully listed!')
+    except:
+        flash('An error occurred. Artist ' + form.name.data + 'could not be added')
+        print(form.errors)
+        print(sys.exc_info())
+    finally:
+        db.session.close()
   return render_template('pages/home.html')
 
 
