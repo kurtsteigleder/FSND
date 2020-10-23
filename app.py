@@ -15,6 +15,8 @@ from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
 import sys
+from sqlalchemy.sql import func
+
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -91,14 +93,16 @@ def search_venues():
   # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
   # seach for Hop should return "The Musical Hop".
   # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
-  response={
-    "count": 1,
-    "data": [{
-      "id": 2,
-      "name": "The Dueling Pianos Bar",
-      "num_upcoming_shows": 0,
-    }]
-  }
+  search_term = request.form["search_term"]
+  print(search_term)
+  show_subquery = db.session.query(Show.venue_id, func.count('*').label('num_upcoming_shows')).filter(Show.start_time >= func.current_date()).group_by(Show.venue_id).subquery()
+  venues_data = db.session.query(Venue.name, Venue.id,show_subquery.c.num_upcoming_shows).filter(Venue.name.ilike('%'+search_term+'%')).outerjoin(show_subquery, Venue.id==show_subquery.c.venue_id)  
+  response = {}
+  venue_list = []
+  response["count"] = venues_data.count()
+  for venue in venues_data.all():
+    venue_list.append(venue)
+  response["data"] = venue_list
   return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
 
 @app.route('/venues/<int:venue_id>')
@@ -152,29 +156,7 @@ def show_venue(venue_id):
       "past_shows_count": len(past_shows),
       "upcoming_shows_count": len(upcoming_shows)
   }
-  # data1={
-  #   "id": 1,
-  #   "name": "The Musical Hop",
-  #   "genres": ["Jazz", "Reggae", "Swing", "Classical", "Folk"],
-  #   "address": "1015 Folsom Street",
-  #   "city": "San Francisco",
-  #   "state": "CA",
-  #   "phone": "123-123-1234",
-  #   "website": "https://www.themusicalhop.com",
-  #   "facebook_link": "https://www.facebook.com/TheMusicalHop",
-  #   "seeking_talent": True,
-  #   "seeking_description": "We are on the lookout for a local artist to play every two weeks. Please call us.",
-  #   "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60",
-  #   "past_shows": [{
-  #     "artist_id": 4,
-  #     "artist_name": "Guns N Petals",
-  #     "artist_image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
-  #     "start_time": "2019-05-21T21:30:00.000Z"
-  #   }],
-  #   "upcoming_shows": [],
-  #   "past_shows_count": 1,
-  #   "upcoming_shows_count": 0,
-  # }
+ 
   return render_template('pages/show_venue.html', venue=data)
 
 #  Create Venue
@@ -239,14 +221,16 @@ def search_artists():
   # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
   # seach for "A" should return "Guns N Petals", "Matt Quevado", and "The Wild Sax Band".
   # search for "band" should return "The Wild Sax Band".
-  response={
-    "count": 1,
-    "data": [{
-      "id": 4,
-      "name": "Guns N Petals",
-      "num_upcoming_shows": 0,
-    }]
-  }
+  search_term = request.form["search_term"]
+  print(search_term)
+  shows_subquery = db.session.query(Show.artist_id, func.count('*').label('num_upcoming_shows')).filter(Show.start_time >= func.current_date()).group_by(Show.artist_id).subquery()
+  artists_data =  db.session.query(Artist.name, Artist.id,shows_subquery.c.num_upcoming_shows).filter(Artist.name.ilike('%'+search_term+'%')).outerjoin(shows_subquery, Artist.id==shows_subquery.c.artist_id)  
+  response = {}
+  artists_list = []
+  response["count"] = artists_data.count()
+  for artist in artists_data.all():
+    artists_list.append(artist)
+  response["data"] = artists_list
   return render_template('pages/search_artists.html', results=response, search_term=request.form.get('search_term', ''))
 
 @app.route('/artists/<int:artist_id>')
