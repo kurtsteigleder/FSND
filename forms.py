@@ -82,8 +82,16 @@ genres_list = [
 ]
 
 def check_phone(form, field):
-	if not re.search(r"^[0-9]{3}[-]?[0-9]{3}[-]?[0-9]{4}?", field.data) and field.data > 10:
+	if not re.search(r"^[0-9]{3}-[0-9]{3}-[0-9]{4}$", field.data) and field.data > 10:
 		raise ValidationError("Invalid phone number.")
+
+def check_valid_phone(form, field):
+    try:
+        input_number = phonenumbers.parse(field.data, 'US')
+        if not phonenumbers.is_possible_number(input_number):
+            raise ValidationError('Invalid phone number.')
+    except Exception as e:
+        raise ValidationError(e.args)
 
 class ShowForm(Form):
     artist_id = StringField(
@@ -113,7 +121,7 @@ class VenueForm(Form):
         'address', validators=[DataRequired()]
     )
     phone = StringField(
-        'phone', validators = [check_phone]
+        'phone', validators = [check_phone, check_valid_phone]
     )
     website_link = StringField(
         # TODO implement enum restriction
@@ -150,7 +158,7 @@ class ArtistForm(Form):
     )
     phone = StringField(
         # TODO implement validation logic for state
-        'phone', validators = [check_phone]
+        'phone', validators = [check_phone, check_valid_phone]
     )
     image_link = StringField(
         'image_link'
