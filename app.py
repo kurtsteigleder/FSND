@@ -185,7 +185,7 @@ def create_venue_form():
   form = VenueForm()
   return render_template('forms/new_venue.html', form=form)
 
-@app.route('/venues/create_no_csrf', methods=['POST'])
+@app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
@@ -366,7 +366,7 @@ def create_artist_form():
 # called upon submitting the new artist listing form
 # DONE: insert form data as a new Venue record in the db, instead
 # DONE: modify data to be the data object returned from db insertion
-@app.route('/artists/create_no_csrf', methods=['POST'])
+@app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
   form = ArtistForm(request.form)
   artist = Artist(
